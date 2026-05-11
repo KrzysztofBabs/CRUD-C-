@@ -1,10 +1,10 @@
-# 🚀 TodoList API - Nowoczesny Backend w C#
+#  TodoList API - Nowoczesny Backend w C#
 
 Ten projekt to w pełni funkcjonalne API typu CRUD (Create, Read, Update, Delete) zbudowane w języku C# (.NET 10).
 
 Celem aplikacji jest zarządzanie zadaniami (To-Do List), a sam kod został zaprojektowany z naciskiem na wydajność, minimalizm i wykorzystanie najnowszych mechanizmów języka C#. Do projektu podpięty jest również frontendowy Dashboard.
 
-## 🧠 Architektura i zalety kodu
+##  Architektura i zalety kodu
 
 W aplikacji zrezygnowano ze starego, ciężkiego podejścia (znanego m.in. z klasycznego Spring Boota czy starych wersji ASP.NET) na rzecz nowoczesnych, lekkich wzorców:
 
@@ -14,7 +14,7 @@ W aplikacji zrezygnowano ze starego, ciężkiego podejścia (znanego m.in. z kla
 * **Brak Boilerplate Code:** Model danych wykorzystuje Właściwości w C# (`{ get; set; }`), co eliminuje konieczność generowania dziesiątek linijek z getterami i setterami (jak ma to miejsce w klasycznej Javie bez Lomboka).
 * **Automatyczny Model Binding:** Framework sam wyciąga dane z ciała żądania (JSON) i bezpiecznie parsuje je na silnie typowane obiekty języka C#.
 
-## 🗄️ Warstwa danych (Entity Framework Core)
+##  Warstwa danych (Entity Framework Core)
 
 Aplikacja nie używa czystego kodu SQL. Zamiast tego wykorzystuje **Entity Framework Core (ORM)** do komunikacji z relacyjną bazą danych PostgreSQL.
 
@@ -22,12 +22,12 @@ Aplikacja nie używa czystego kodu SQL. Zamiast tego wykorzystuje **Entity Frame
 * **Przenośność:** Przejście z deweloperskiej bazy w pamięci RAM (In-Memory) na produkcyjnego PostgreSQL-a wymagało zmiany zaledwie jednej linijki kodu w konfiguracji (`appsettings.json`).
 * **Code-First:** Tabele w bazie danych są automatycznie generowane na podstawie modeli klas w C# podczas startu aplikacji (`EnsureCreated()`).
 
-## 🐳 Konteneryzacja (Docker)
+##  Konteneryzacja (Docker)
 
 Zarówno baza danych PostgreSQL, jak i sama aplikacja .NET mogą działać w odizolowanych środowiskach za pomocą Dockera.
 Projekt wykorzystuje tzw. **Multi-stage build** w pliku `Dockerfile` – do budowania kodu wykorzystywany jest ciężki obraz SDK, natomiast do uruchomienia aplikacji wędruje wyłącznie lekki obraz ASP.NET Runtime, co drastycznie zmniejsza wagę końcowej aplikacji.
 
-## 📡 Lista Endpointów (REST API)
+##  Lista Endpointów (REST API)
 
 | Metoda | Endpoint | Akcja | Zwracany status |
 | :--- | :--- | :--- | :--- |
