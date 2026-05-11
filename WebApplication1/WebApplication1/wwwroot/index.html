@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="pl">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Office Tasks</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <aside class="sidebar" aria-label="Nawigacja">
+        <div class="brand">
+            <span class="brand-mark">OT</span>
+            <div>
+                <strong>Office Tasks</strong>
+                <span>Panel pracy</span>
+            </div>
+        </div>
+
+        <nav class="nav-list">
+            <a class="active" href="#">Pulpit</a>
+            <a href="#">Zadania</a>
+            <a href="#">Zespół</a>
+            <a href="#">Raporty</a>
+        </nav>
+
+        <div class="sidebar-note">
+            <span class="dot"></span>
+            API działa lokalnie
+        </div>
+    </aside>
+
+    <main class="app-shell">
+        <header class="topbar">
+            <div>
+                <p class="eyebrow">Dzisiaj</p>
+                <h1>Centrum zadań biura</h1>
+            </div>
+            <div class="search-wrap">
+                <span aria-hidden="true">⌕</span>
+                <input id="searchInput" type="search" placeholder="Szukaj zadania">
+            </div>
+        </header>
+
+        <section class="summary-grid" aria-label="Podsumowanie">
+            <article class="metric">
+                <span>Wszystkie</span>
+                <strong id="totalCount">0</strong>
+            </article>
+            <article class="metric">
+                <span>Otwarte</span>
+                <strong id="openCount">0</strong>
+            </article>
+            <article class="metric">
+                <span>Zamknięte</span>
+                <strong id="doneCount">0</strong>
+            </article>
+        </section>
+
+        <section class="workspace">
+            <div class="task-panel">
+                <div class="panel-head">
+                    <div>
+                        <p class="eyebrow">Lista operacyjna</p>
+                        <h2>Zadania</h2>
+                    </div>
+                    <div class="filters" role="group" aria-label="Filtry">
+                        <button class="filter active" data-filter="all" type="button">Wszystkie</button>
+                        <button class="filter" data-filter="open" type="button">Otwarte</button>
+                        <button class="filter" data-filter="done" type="button">Gotowe</button>
+                    </div>
+                </div>
+
+                <form id="todoForm" class="task-form">
+                    <input id="todoName" name="name" autocomplete="off" placeholder="Dodaj nowe zadanie biurowe">
+                    <button type="submit">Dodaj</button>
+                </form>
+
+                <div id="statusMessage" class="status-message" role="status"></div>
+                <div id="todoList" class="todo-list" aria-live="polite"></div>
+            </div>
+
+            <aside class="focus-panel">
+                <p class="eyebrow">Priorytet dnia</p>
+                <h2>Porządek pracy</h2>
+                <p>Widok jest spięty z Twoim API. Zmiany statusu i usuwanie zapisują się od razu w pamięci aplikacji.</p>
+                <div class="progress-row">
+                    <span>Postęp</span>
+                    <strong id="progressLabel">0%</strong>
+                </div>
+                <div class="progress-track">
+                    <span id="progressBar"></span>
+                </div>
+            </aside>
+        </section>
+    </main>
+
+    <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,28 @@
+### pobierz wszystko
+GET http://localhost:5010/todos
+Accept: application/json
+
+### Dodaj nowe zadanie
+POST http://localhost:5010/todos
+Content-Type: application/json
+
+{
+  "name": "zrobic obiad",
+  "isComplete": false
+}
+
+
+### Zaktualizuj zadanie o ID ?
+PUT http://localhost:5010/todos/2
+Content-Type: application/json
+
+{
+  "name": "zjesc obiad",
+  "isComplete": true
+}
+
+### Usuń zadanie o id ?
+DELETE http://localhost:5010/todos/1
+
+### Usuń zadanie o ID ?
+DELETE http://localhost:5010/todos/3
