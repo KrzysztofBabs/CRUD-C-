@@ -1,38 +1,37 @@
-#  TodoList API - Nowoczesny Backend w C#
+# TodoList API
 
-Ten projekt to w pełni funkcjonalne API typu CRUD (Create, Read, Update, Delete) zbudowane w języku C# (.NET 10).
+Projekt backendowy napisany w C# (.NET 10) realizujący klasycznego CRUD-a do zarządzania zadaniami. Aplikacja powstała w celu praktycznego wykorzystania nowoczesnego, lekkiego podejścia do budowania API w ekosystemie .NET.
 
-Celem aplikacji jest zarządzanie zadaniami (To-Do List), a sam kod został zaprojektowany z naciskiem na wydajność, minimalizm i wykorzystanie najnowszych mechanizmów języka C#. Do projektu podpięty jest również frontendowy Dashboard.
+## Technologie
+- **C# / .NET 10**
+- **Entity Framework Core** (ORM)
+- **PostgreSQL**
 
-##  Architektura i zalety kodu
+## Architektura i rozwiązania w kodzie
 
-W aplikacji zrezygnowano ze starego, ciężkiego podejścia (znanego m.in. z klasycznego Spring Boota czy starych wersji ASP.NET) na rzecz nowoczesnych, lekkich wzorców:
+W projekcie zrezygnowano z klasycznego, ciężkiego podejścia opartego na rozbudowanej strukturze katalogów i dziesiątkach plików (znanego m.in. ze starszych wersji ASP.NET MVC) na rzecz lżejszych i nowocześniejszych mechanizmów wbudowanych w nowe wersje C#.
 
-* **Minimal APIs:** Zamiast tworzyć osobne, rozbudowane klasy kontrolerów, cała logika routingu i obsługi żądań HTTP została zamknięta w jednym, czytelnym pliku `Program.cs`. Przypomina to zwinność frameworków z ekosystemu Node.js.
-* **W 100% Asynchroniczne I/O (`async/await`):** Każde odwołanie do bazy danych (np. `ToListAsync()`, `FindAsync()`) nie blokuje głównego wątku serwera. Dzięki temu aplikacja jest w stanie obsłużyć tysiące zapytań jednocześnie bez "zamrażania" aplikacji.
-* **Wstrzykiwanie Zależności (DI) "w locie":** Baza danych jest wstrzykiwana bezpośrednio do argumentów funkcji obsługujących endpointy (np. `(TodoContext db)`), co całkowicie eliminuje potrzebę pisania konstruktorów i ręcznego zarządzania instancjami.
-* **Brak Boilerplate Code:** Model danych wykorzystuje Właściwości w C# (`{ get; set; }`), co eliminuje konieczność generowania dziesiątek linijek z getterami i setterami (jak ma to miejsce w klasycznej Javie bez Lomboka).
-* **Automatyczny Model Binding:** Framework sam wyciąga dane z ciała żądania (JSON) i bezpiecznie parsuje je na silnie typowane obiekty języka C#.
+### 1. Minimal API (Brak kontrolerów)
+Zamiast tworzyć osobne klasy Controllerów z masą atrybutów, cała logika routingu i obsługi zapytań HTTP została zdefiniowana w jednym pliku `Program.cs`. Aplikacja mapuje konkretne akcje bezpośrednio pod ścieżki URL (np. `app.MapGet`, `app.MapPost`), co mocno redukuje ilość tzw. boilerplate code i przyspiesza działanie aplikacji.
 
-##  Warstwa danych (Entity Framework Core)
+### 2. Pełna asynchroniczność (async/await)
+Każda operacja wejścia/wyjścia, w tym komunikacja z bazą danych (np. `ToListAsync()`, `FindAsync()`), jest w pełni asynchroniczna. Użycie `await` sprawia, że wątki serwera nie są blokowane w oczekiwaniu na odpowiedź z bazy, co drastycznie zwiększa przepustowość aplikacji przy wielu jednoczesnych zapytaniach z frontendu.
 
-Aplikacja nie używa czystego kodu SQL. Zamiast tego wykorzystuje **Entity Framework Core (ORM)** do komunikacji z relacyjną bazą danych PostgreSQL.
+### 3. Entity Framework Core zamiast czystego SQL
+Aplikacja nie zawiera ani jednej linijki czystego kodu SQL. Zamiast tego komunikuje się z bazą PostgreSQL przy użyciu EF Core:
+- **Mapowanie w locie:** Zamiast ręcznego przypisywania wyników z bazy do pól obiektów, EF Core sam tłumaczy wiersze z tabel na listy obiektów C# (`List<TodoItem>`).
+- **Code-First:** Schemat bazy i tabele są generowane i weryfikowane automatycznie na podstawie definicji klas w kodzie podczas startu aplikacji (za pomocą `EnsureCreated()`).
+- Ochrona przed SQL Injection jest obsługiwana domyślnie pod maską przez framework.
 
-* **Zero SQL Injection:** Zapytania są generowane bezpiecznie pod maską przez framework.
-* **Przenośność:** Przejście z deweloperskiej bazy w pamięci RAM (In-Memory) na produkcyjnego PostgreSQL-a wymagało zmiany zaledwie jednej linijki kodu w konfiguracji (`appsettings.json`).
-* **Code-First:** Tabele w bazie danych są automatycznie generowane na podstawie modeli klas w C# podczas startu aplikacji (`EnsureCreated()`).
+### 4. Wstrzykiwanie zależności (DI) w parametrach
+Zrezygnowano z definiowania pól prywatnych i pisania konstruktorów do wstrzykiwania zależności. Kontekst bazy danych (`TodoContext db`) jest wstrzykiwany bezpośrednio jako argument w funkcjach obsługujących poszczególne endpointy. Kontener DI (Dependency Injection) frameworka automatycznie rozwiązuje te zależności w momencie nadejścia żądania HTTP.
 
-##  Konteneryzacja (Docker)
+### 5. Automatyczny Model Binding
+Przy endpointach przyjmujących dane (POST, PUT), framework automatycznie parsuje ciało zapytania (JSON) i mapuje je na silnie typowane obiekty języka C# (`TodoItem`). Wyciąganie parametrów ze ścieżki URL (np. `id` z `/todos/{id}`) odbywa się w locie i jest automatycznie rzutowane na odpowiednie typy proste.
 
-Zarówno baza danych PostgreSQL, jak i sama aplikacja .NET mogą działać w odizolowanych środowiskach za pomocą Dockera.
-Projekt wykorzystuje tzw. **Multi-stage build** w pliku `Dockerfile` – do budowania kodu wykorzystywany jest ciężki obraz SDK, natomiast do uruchomienia aplikacji wędruje wyłącznie lekki obraz ASP.NET Runtime, co drastycznie zmniejsza wagę końcowej aplikacji.
+## Dostępne Endpointy
 
-##  Lista Endpointów (REST API)
-
-| Metoda | Endpoint | Akcja | Zwracany status |
-| :--- | :--- | :--- | :--- |
-| **GET** | `/todos` | Pobiera wszystkie zadania | `200 OK` |
-| **POST** | `/todos` | Dodaje nowe zadanie | `201 Created` |
-| **PUT** | `/todos/{id}` | Aktualizuje pola wybranego zadania | `204 No Content` / `404 Not Found` |
-| **DELETE** | `/todos/{id}` | Usuwa zadanie z bazy | `204 No Content` / `404 Not Found` |
-
+- `GET /todos` - Zwraca kompletną listę zadań.
+- `POST /todos` - Tworzy nowe zadanie.
+- `PUT /todos/{id}` - Aktualizuje stan (np. nazwę lub flagę IsComplete) dla zadania o podanym identyfikatorze. Zwraca status `204 No Content` przy sukcesie lub `404 Not Found`.
+- `DELETE /todos/{id}` - Usuwa zadanie z bazy danych.
